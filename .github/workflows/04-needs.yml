@@ -81,7 +81,7 @@ jobs:
     steps:
       - name: Generate report
         run: |
-          echo "Both lint AND security-scan passed
+          echo "Both lint AND security-scan passed"
           echo "Generating final report..."
           echo "Pipeline status: ALL GREEN"
 

@@ -1,0 +1,75 @@
+name: 06 - Real Code (Python + Pytest)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Install Python & Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ─────────────────────────────────────────
+      # STEP 1: CHECKOUT
+      # Without this — the runner VM is EMPTY
+      # This clones your repo into the runner
+      # ALWAYS the first step in every real workflow
+      # ─────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # After checkout, runner has:
+      # /home/runner/work/learn-github-actions/
+      #   ├── src/claims.py
+      #   ├── tests/test_claims.py
+      #   └── requirements-test.txt
+
+      # ─────────────────────────────────────────
+      # STEP 2: INSTALL PYTHON
+      # Runner has Python pre-installed but you
+      # control the exact version with this action
+      # ─────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Verify Python is available
+      - name: Show Python version
+        run: python --version
+
+      # ─────────────────────────────────────────
+      # STEP 3: INSTALL DEPENDENCIES
+      # pip install runs exactly like on your laptop
+      # ─────────────────────────────────────────
+      - name: Install test dependencies
+        run: pip install -r requirements-test.txt
+
+      # Verify packages installed
+      - name: Show installed packages
+        run: pip list
+
+      # ─────────────────────────────────────────
+      # STEP 4: RUN TESTS
+      # -v = verbose (show each test name)
+      # If ANY test fails → this step exits 1
+      # → job fails → workflow fails → push is blocked
+      # ─────────────────────────────────────────
+      - name: Run tests
+        run: pytest tests/ -v
+
+      # ─────────────────────────────────────────
+      # STEP 5: RUN TESTS WITH COVERAGE
+      # --cov=src        = measure coverage in src/ folder
+      # --cov-report=term-missing = show which lines not covered
+      # --cov-fail-under=80 = fail if coverage drops below 80%
+      # ─────────────────────────────────────────
+      - name: Run tests with coverage report
+        run: |
+          pytest tests/ -v \
+            --cov=src \
+            --cov-report=term-missing \
+            --cov-fail-under=80

@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: show what triggered this workflow
         run: |
-          echo "Triggered on ${{github.action}}"
+          echo "Triggered on ${{github.event_name}}"
           echo "Triggered by ${{github.actor}}"
           echo "Branch ${{github.ref_name}}"
       - name: Step that only runs on push

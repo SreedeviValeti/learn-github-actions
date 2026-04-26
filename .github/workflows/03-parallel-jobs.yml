@@ -1,0 +1,38 @@
+name: 03 parallel jobs
+on: 
+  workflow_dispatch: 
+jobs:
+  job-one:
+    name: job one (Lint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulate Lint check
+        run: |
+          echo "Lint checking...."
+          sleep 5
+          echo "Lint Passed"
+      - name: Get this Simulate Lint check VM
+        run: |
+          echo "Hostname $(hostname)"
+          echo "OS $(uname -a)"
+  job-two:
+    name: job two
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Check
+        run: |
+          echo "Test Checking..."
+          sleep 7
+          echo "test passed"
+      - name: Get test VM
+        run: |
+          echo "Hostname $(hostname)"
+          echo "OS $(uname -a)"
+      - name: Create a File
+        run: |
+          echo "Create a File"
+          echo "Job 2 File" > job-two-file.txt
+          echo "File created $(cat job-two-file.txt)"
+  
+        
+    

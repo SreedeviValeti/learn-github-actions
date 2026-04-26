@@ -1,0 +1,88 @@
+name: Job Dependencies (needs)
+on: 
+  workflow_dispatch: 
+jobs:
+  # ─────────────────────────────────────────────
+  # PATTERN 1: CHAIN  →  build → test → deploy
+  # ─────────────────────────────────────────────
+  build:
+    name: 1. build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Artifactory
+        run: |
+          echo "Builds are running"
+          sleep 5
+          echo "Builds are completed"
+  test:
+    name: 2. test
+    runs-on: ubuntu-latest
+    needs: build  # waits for 'build' to succeed first
+    steps:
+      - name: Simulate tests
+        run: |
+          echo "Build passed — now running tests..."
+          sleep 4
+          echo "All tests passed!"
+  deploy:
+    name: 3. deploy
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+     - name: Simulate deploy
+       run: |
+         echo "Tests passed — now deploying..."
+         sleep 2
+         echo "Deployed successfully!"
+  # ─────────────────────────────────────────────
+  # PATTERN 2: FAN-OUT  →  setup → lint AND scan (parallel)
+  # ─────────────────────────────────────────────
+
+  setup:
+    name: 4. Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulate setup
+        run: |
+          echo "Running setup checks..."
+          sleep 2
+          echo "Setup complete."
+
+  lint:
+    name: 5a. Lint (fan-out)
+    runs-on: ubuntu-latest
+    needs: setup        # waits for setup, then ruscan
+    steps:
+      - name: Simulate lint
+        run: |
+          echo "Setup done — running lint now..."
+          sleep 3
+          echo "Lint passed!"
+
+  security-scan:
+    name: 5b. Security Scan (fan-out)
+    runs-on: ubuntu-latest
+    needs: setup        # also waits for setup — runs parallel with lint
+    steps:
+      - name: Simulate security scan
+        run: |
+          echo "Setup done — running security scan now..."
+          sleep 5
+          echo "No vulnerabilities found!"
+
+  # ─────────────────────────────────────────────
+  # PATTERN 3: FAN-IN  →  lint AND scan → final-re
+  # ─────────────────────────────────────────────
+
+  final-report:
+    name: 6. Final Report (fan-in)
+    runs-on: ubuntu-latest
+    needs: [lint, security-scan]   # waits for BOT
+    steps:
+      - name: Generate report
+        run: |
+          echo "Both lint AND security-scan passed"
+          echo "Generating final report..."
+          echo "Pipeline status: ALL GREEN"
+
+  

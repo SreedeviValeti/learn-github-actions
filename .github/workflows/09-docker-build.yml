@@ -1,0 +1,22 @@
+name: 09 docker build
+on: 
+  workflow_dispatch: 
+  push: 
+    paths: 
+      - 'src/**'
+      - 'tests/**'
+      - 'Dockerfile'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v4
+      - name: Build docker image
+        run: |
+          docker build -t claims-service:${{github.sha}} . 
+          docker tag claims-service:${{github.sha}} claims-service:latest
+      - name: Smoke test
+        run: docker run --rm claims-service:latest
+      - name: Show image size
+        run: docker images claims-service:latest

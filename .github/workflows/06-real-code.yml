@@ -1,8 +1,6 @@
 name: 06 - Real Code (Python + Pytest)
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:

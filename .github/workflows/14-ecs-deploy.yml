@@ -24,11 +24,11 @@ jobs:
           role-to-assume: ${{secrets.AWS_ROLE_ARN}}
           aws-region: us-east-1
       - name: login to ecr 
-        uses: aws-actions/amaon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@v2
       - name: build and push
         id: push
         env:
-          REGISTRY: ${{github.ECR_REGISTRY}}
+          REGISTRY: ${{secrets.ECR_REGISTRY}}
           REPOSITORY: claims-service
           IMAGE_TAG: ${{github.sha}}
         run: |

@@ -54,7 +54,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: claims-service
-          image: ${{needs.build.outputs.image}}
+          image:  ${{ secrets.ECR_REGISTRY }}/claims-service:${{ github.sha }}
       - name: Deply task definition to ECS 
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:

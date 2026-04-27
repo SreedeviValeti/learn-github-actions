@@ -1,0 +1,31 @@
+name: 07 - Caching
+on: 
+  workflow_dispatch: 
+  push: 
+    paths: 
+      - 'src/**'
+      - 'requirements-test.txt'
+      - 'tests\**'
+jobs:
+  test-with-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Cache Pip Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{runner.os}}-pip-${{hashFiles('requirements-test.txt')}}
+          restore-keys:
+            ${{runner.os}}-pip-
+      - name: Install Pip Dependencies
+        run: pip install -r requirements-test.txt
+      - name: Test Pytest
+        env:
+          PYTHON_PATH: .
+        run: pytest tests/ --cov=src --cov-report=term-missing --cov-fail-under=80

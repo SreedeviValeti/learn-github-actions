@@ -1,11 +1,6 @@
 name: 07 - Caching
 on: 
   workflow_dispatch: 
-  push: 
-    paths: 
-      - 'src/**'
-      - 'requirements-test.txt'
-      - 'tests\**'
 jobs:
   test-with-cache:
     runs-on: ubuntu-latest

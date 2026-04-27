@@ -19,9 +19,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: build image 
-        REPOSITORY: claims-service
-        REGISTRY: ${{secrets..ECR_REGISTRY}}
-        IMAGE_TAG: ${{github.sha}}
+        env:
+          REPOSITORY: claims-service
+          REGISTRY: ${{secrets.ECR_REGISTRY}}
+          IMAGE_TAG: ${{github.sha}}
         run: | 
           docker build -t $REGISTRY/REPOSITORY:IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

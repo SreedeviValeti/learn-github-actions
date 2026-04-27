@@ -1,0 +1,38 @@
+name: 13 Environments
+on: 
+  workflow_dispatch: 
+permissions: 
+  id-token: write
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone repo
+        uses: actions/checkout@v4
+      - name: configure aws creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
+          aws-region: us-east-1
+      - name: login ecr 
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: build image 
+        REPOSITORY: claims-service
+        REGISTRY: ${{secrets..ECR_REGISTRY}}
+        IMAGE_TAG: ${{ github.sha }}
+        run: | 
+          docker build -t $REGISTRY/REPOSITORY:IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "Built and pushed $REGISTRY/$REPOSITORY:$IMAGE_TAG"
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    needs: build
+    steps:
+      - name: confirm deployment environment
+        run: | 
+          echo "deployment to prod"
+          echo "pushed image to ecr ${{secrets.ECR_REGISTRY}}/claims-service:${{github.sha}}"
+          echo "triggered by ${{github.actor}}

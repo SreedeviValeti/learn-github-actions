@@ -36,4 +36,4 @@ jobs:
         run: | 
           echo "deployment to prod"
           echo "pushed image to ecr ${{secrets.ECR_REGISTRY}}/claims-service:${{github.sha}}"
-          echo "triggered by ${{github.actor}}
+          echo "triggered by ${{github.actor}}"
